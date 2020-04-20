@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+##############################
+# Special to this repository #
+##############################
+.idea/
+.idea/
+*.pyc
+*.exe
+*.spec
+/data/*
+!/data/Linelist example_input file.xlsx
