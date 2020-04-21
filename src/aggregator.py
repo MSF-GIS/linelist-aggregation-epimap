@@ -5,6 +5,7 @@ from openpyxl.styles import Border, Side, PatternFill, Font
 from openpyxl.utils.dataframe import dataframe_to_rows
 import os
 import pandas as pd
+import Levenshtein
 
 
 def get_data_dir():
@@ -17,6 +18,24 @@ def get_data_dir():
     elif os.path.join('..', 'data'):
         return os.path.join('..', 'data')
     raise Exception('Data directory not found')
+
+
+def fix_village_if_necessary(linelist, villages):
+    idx = linelist[~linelist['Village'].isin(villages)].index
+    for i in idx:
+        min_distance = 5
+        min_village = ''
+        for village in villages:
+            dist = Levenshtein.distance(linelist.loc[i, 'Village'], village)
+            if dist < min_distance:
+                min_distance = dist
+                min_village = village
+        if min_village == '':
+            logging.error(f'Line {i} of Linelist removed because village not found : ' + linelist.loc[i, 'Village'])
+            linelist = linelist[linelist.index != i]
+        else:
+            linelist.loc[i, 'Village'] = min_village
+    return linelist
 
 
 def aggregate(input_file):
@@ -38,7 +57,7 @@ def aggregate(input_file):
     linelist['Week'] = linelist['Date of Assessment'].apply(lambda t: t.isocalendar()[1])
     linelist['Year'] = linelist['Date of Assessment'].apply(lambda t: t.year)
     linelist['Week'] = linelist['Date of Assessment'].apply(lambda t: t.isocalendar()[1])
-    # TODO : Ensure Village is correct before
+    linelist = fix_village_if_necessary(linelist, geo['Village'].unique())
     linelist_agg = linelist.groupby(['Village', 'Week', 'Year']).count()
     linelist_agg.columns = ['Num of cases']
     linelist_agg = linelist_agg.reset_index()
@@ -100,7 +119,7 @@ def export_data_frame_to_excel(df, output_file):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='logs.log', level=logging.INFO)
+    logging.basicConfig(filename='logs.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     input_file_name = 'Linelist example_input file.xlsx'
     try:
         df = aggregate(os.path.join(get_data_dir(), input_file_name))
