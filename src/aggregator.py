@@ -1,4 +1,5 @@
 import datetime
+import logging
 from openpyxl import Workbook
 from openpyxl.styles import Border, Side, PatternFill, Font
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -99,6 +100,10 @@ def export_data_frame_to_excel(df, output_file):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='logs.log', level=logging.INFO)
     input_file_name = 'Linelist example_input file.xlsx'
-    df = aggregate(os.path.join(get_data_dir(), input_file_name))
-    export_data_frame_to_excel(df, os.path.join(get_data_dir(), 'res_V3.xlsx'))
+    try:
+        df = aggregate(os.path.join(get_data_dir(), input_file_name))
+        export_data_frame_to_excel(df, os.path.join(get_data_dir(), 'res_V3.xlsx'))
+    except Exception as e:
+        logging.error('Error: ' + str(e))
