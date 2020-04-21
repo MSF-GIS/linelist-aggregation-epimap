@@ -4,6 +4,8 @@ import os
 import pandas as pd
 import sys
 
+from xlrd import XLRDError
+
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 from src.aggregator import aggregate
 
@@ -24,5 +26,11 @@ class TestAggregator(unittest.TestCase):
                         else:
                             self.assertEqual(df_expected.loc[i, col], df.loc[i, col], msg=f'i={i}; j={j}')
 
-    # TODO :
-    # - 2 cases the same day and village
+    def test_bad_column_name(self):
+        with self.assertRaises(KeyError):
+            aggregate(os.path.join('data', 'error', 'BadColumnName.xlsx'))
+
+    def test_bad_sheet_name(self):
+        with self.assertRaises(XLRDError):
+            aggregate(os.path.join('data', 'error', 'BadSheetName.xlsx'))
+
