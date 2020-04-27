@@ -47,13 +47,30 @@ Install dependencies
 pip install -r requirements.txt
 ````
 
-## Usage
+## Development Usage
 
 Run the Python script aggregator.
 
 ```
 python src/aggregator.py 
 ```
+
+To release, install pyinstaller `pip install pyinstaller`, and use the following command
+
+````
+pyinstaller src/aggregator.py -F --hidden-import="pkg_resources.py2_warn"
+````
+
+*Remark : there is an hidden-import argument to fix
+[a Pyinstaller issue](https://github.com/pypa/setuptools/issues/1963).*
+
+## User usage
+
+- Rename the data file `Linelist.xlsx` and put it in the same directory as 
+`aggregation_epimap.exe`.
+- Run `aggregation_epimap.exe` by double-clicking.
+- You will see 2 files : `logs.log` containing the logs about all the executions.
+and `AggregatedLinelist.xlsx` file if the running is successful
 
 ## Tests
 

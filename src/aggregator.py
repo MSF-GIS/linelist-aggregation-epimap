@@ -120,9 +120,13 @@ def export_data_frame_to_excel(df, output_file):
 
 if __name__ == '__main__':
     logging.basicConfig(filename='logs.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    input_file_name = 'Linelist example_input file.xlsx'
+    input_file_name = 'Linelist.xlsx'
     try:
-        df = aggregate(os.path.join(get_data_dir(), input_file_name))
-        export_data_frame_to_excel(df, os.path.join(get_data_dir(), 'res_V3.xlsx'))
+        df = aggregate(input_file_name)
+        export_data_frame_to_excel(df, 'AggregatedLinelist.xlsx')
+        print('SUCCESS')
     except Exception as e:
         logging.error('Error: ' + str(e))
+        print('ERROR : See logs.log file to have more details')
+    finally:
+        input('Press ENTER to close this console')
