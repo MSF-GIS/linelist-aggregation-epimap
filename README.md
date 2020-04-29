@@ -36,6 +36,7 @@ Install dependencies
 conda install pandas==1.0.3
 conda install xlrd==1.2.0
 conda install openpyxl==3.0.3
+conda install python-levenshtein=0.12.0
 ```
 
 ### Virtualenv or pipenv

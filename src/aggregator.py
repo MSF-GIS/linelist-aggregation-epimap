@@ -56,7 +56,6 @@ def aggregate(input_file):
     linelist['Date of Assessment'] = pd.to_datetime(linelist['Date of Assessment'])
     linelist['Week'] = linelist['Date of Assessment'].apply(lambda t: t.isocalendar()[1])
     linelist['Year'] = linelist['Date of Assessment'].apply(lambda t: t.year)
-    linelist['Week'] = linelist['Date of Assessment'].apply(lambda t: t.isocalendar()[1])
     linelist = fix_village_if_necessary(linelist, geo['Village'].unique())
     linelist_agg = linelist.groupby(['Village', 'Week', 'Year']).count()
     linelist_agg.columns = ['Num of cases']
@@ -125,4 +124,4 @@ if __name__ == '__main__':
         df = aggregate(os.path.join(get_data_dir(), input_file_name))
         export_data_frame_to_excel(df, os.path.join(get_data_dir(), 'res_V3.xlsx'))
     except Exception as e:
-        logging.error('Error: ' + str(e))
+        logging.exception('Error: ' + str(e))
