@@ -52,6 +52,7 @@ class MainDialog(Tk):
     def __init__(self):
         Tk.__init__(self)
         self.title('Aggregator Tool Dialog')
+        self.resizable(width=False, height=False)
         self.iconbitmap(os.path.join(get_data_dir(), '..', 'res', 'msf.ico'))
         self.createWidgets()
 
