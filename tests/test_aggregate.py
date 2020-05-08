@@ -34,3 +34,7 @@ class TestAggregator(unittest.TestCase):
         with self.assertRaises(XLRDError):
             aggregate(os.path.join('data', 'error', 'BadSheetName.xlsx'))
 
+    def test_epiweek_missing_lines(self):
+        with self.assertRaises(KeyError):
+            aggregate(os.path.join('data', 'error', 'EpiweekMissingLines.xlsx'))
+
