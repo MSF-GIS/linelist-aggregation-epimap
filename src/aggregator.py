@@ -73,8 +73,9 @@ def aggregate(input_file):
     # Merge data
     linelist_agg_geo = pd.merge(linelist_agg, geo, how='left', on='Village')
     res = pd.DataFrame()
-    # TODO : Test this for loop is not too much CPU heavy
-    for code_loc in sorted(linelist_agg_geo['CODE_LOCATION'].unique()):
+    villages = geo['CODE_LOCATION'].unique()
+    villages = villages[~pd.isnull(villages)]
+    for code_loc in sorted(villages):
         code_loc_linelist = linelist_agg_geo[linelist_agg_geo['CODE_LOCATION'] == code_loc]
         code_loc_cases = pd.merge(epiweek, code_loc_linelist, how='left', on=['Year', 'Week'])
         code_loc_cases['CODE_LOCATION'] = code_loc
