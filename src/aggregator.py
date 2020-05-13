@@ -38,6 +38,20 @@ def fix_village_if_necessary(linelist, villages):
     return linelist
 
 
+def aggregate_on_column(column_name, linelist, value):
+    """
+    Compute the number of cases from linelist with a value for a column
+    :param column_name: The column name in linelist dataframe on which the condition apply
+    :param linelist: The dataframe on which the agregation will be done
+    :param value: The value on which the dataframe will be filtered for the column column_name
+    :return:
+    """
+    df = linelist[linelist[column_name] == value]
+    df_agg = df.groupby(['Village', 'Week', 'Year']).count()[column_name]
+    df_agg = df_agg.reset_index()
+    return df_agg
+
+
 def aggregate(input_file):
     """
     Read input file and aggregate the number of case by week and village
@@ -46,7 +60,7 @@ def aggregate(input_file):
     :return: Dataframe whit aggregation. Columns : 'CODE_LOCATION', 'Year', 'Month', 'Week', 'Num of cases'
     """
     # Get data
-    linelist = pd.read_excel(input_file, sheet_name='Linelist')[['Date of Assessment', 'Village']]
+    linelist = pd.read_excel(input_file, sheet_name='Linelist')[['Date of Assessment', 'Village', 'Malaria RDT result']]
     linelist = linelist[~pd.isnull(linelist).transpose().any()]
     epiweek = pd.read_excel(input_file, sheet_name='Epiweeks', header=2)[['Epi week', 'Month', 'First day in week']]
     geo = pd.read_excel(input_file, sheet_name='GEO')[['Camp/village', 'GEOID (pcode)?']]
@@ -57,9 +71,12 @@ def aggregate(input_file):
     linelist['Week'] = linelist['Date of Assessment'].apply(lambda t: t.isocalendar()[1])
     linelist['Year'] = linelist['Date of Assessment'].apply(lambda t: t.year)
     linelist = fix_village_if_necessary(linelist, geo['Village'].unique())
-    linelist_agg = linelist.groupby(['Village', 'Week', 'Year']).count()
-    linelist_agg.columns = ['Num of cases']
+    linelist_agg = linelist.groupby(['Village', 'Week', 'Year']).count()['Date of Assessment']
     linelist_agg = linelist_agg.reset_index()
+    linelist_agg = pd.merge(linelist_agg, aggregate_on_column('Malaria RDT result', linelist, 1),
+                            how='outer', on=['Village', 'Week', 'Year'])
+    linelist_agg.columns = ['Village', 'Week', 'Year', 'Num of cases', 'Num of cases where malaria RTD was positive']
+
     epiweek['Year'] = -1
     for i in range(len(epiweek)):
         if type(epiweek.loc[i, 'First day in week']) is str:
@@ -80,7 +97,7 @@ def aggregate(input_file):
         code_loc_cases = pd.merge(epiweek, code_loc_linelist, how='left', on=['Year', 'Week'])
         code_loc_cases['CODE_LOCATION'] = code_loc
         res = pd.concat([res, code_loc_cases], axis=0, ignore_index=True)
-    return res[['CODE_LOCATION', 'Year', 'Month', 'Week', 'Num of cases']]
+    return res[['CODE_LOCATION', 'Year', 'Month', 'Week', 'Num of cases', 'Num of cases where malaria RTD was positive']]
 
 
 def export_data_frame_to_excel(df, output_file):
@@ -104,8 +121,10 @@ def export_data_frame_to_excel(df, output_file):
     for index in range(1, len(df) + 2):
         ws['E' + str(index)].fill = PatternFill("solid", fgColor="C6E0B4")
         ws['E' + str(index)].border = Border(top=thin, left=thin, right=thin, bottom=thin)
+        ws['F' + str(index)].fill = PatternFill("solid", fgColor="FDE9D9")
+        ws['F' + str(index)].border = Border(top=thin, left=thin, right=thin, bottom=thin)
     # Apply bold
-    for col in ['A', 'B', 'C', 'D', 'E']:
+    for col in ['A', 'B', 'C', 'D', 'E', 'F']:
         ws[col + '1'].font = Font(bold=True)
     for index in range(1, len(df) + 2):
         ws['A' + str(index)].font = Font(bold=True)
@@ -115,6 +134,7 @@ def export_data_frame_to_excel(df, output_file):
     ws.column_dimensions['C'].width = 14.57
     ws.column_dimensions['D'].width = 9
     ws.column_dimensions['E'].width = 26.57
+    ws.column_dimensions['F'].width = 42.86
     wb.save(output_file)
 
 
