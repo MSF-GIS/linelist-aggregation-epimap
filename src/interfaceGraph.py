@@ -10,28 +10,28 @@ from aggregator import aggregate, export_data_frame_to_excel, get_data_dir
 
 class MainDialog(Tk):
     def createWidgets(self):
-        self.InputMainLabel = Label(self, text="Input XLSX File Path")
+        self.InputMainLabel = Label(self, text="Input XLSX File Path:")
         self.InputMainLabel.grid(row = 0, column=0)#padx=5, pady=10
         self.ChooseInputFileButton = Button(self,text=' ... ', command= self.chooseInputFileMethod)
         self.ChooseInputFileButton.grid(row = 0, column=3, padx=10, pady=10, ipadx = 10)
         self.iFPSv = StringVar()
         self.iFPSv.trace("w",self.alterButton)
-        self.InputFilePathDisplayer = Entry(self, width=40, textvariable=self.iFPSv)
+        self.InputFilePathDisplayer = Entry(self, width=75, textvariable=self.iFPSv)
         self.InputFilePathDisplayer.grid(row = 0, column = 1, columnspan = 2)
-        self.OutputMainLabel = Label(self, text="Output XLSX File Path")
+        self.OutputMainLabel = Label(self, text="Output XLSX File Path:")
         self.OutputMainLabel.grid(row = 1, column=0)
         self.ChooseOutputFileButton = Button(self,text=' ... ', command= self.chooseOutputFileMethod)
         self.ChooseOutputFileButton.grid(row = 1, column=3, padx=10, pady=10, ipadx = 10)
         default_output_filename = 'cartong_epimap_' + datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') +'.xlsx'
         self.oFPSv = StringVar(value=os.path.join(os.getcwd(), default_output_filename))
         self.oFPSv.trace("w",self.alterButton)
-        self.OutputFilePathDisplayer = Entry(self, width=40, textvariable=self.oFPSv)
+        self.OutputFilePathDisplayer = Entry(self, width=75, textvariable=self.oFPSv)
         self.OutputFilePathDisplayer.grid(row = 1, column = 1, columnspan = 2)
         self.CancelDialogButton = Button(self,text=' Cancel ', command = self.quitDialog)
         self.CancelDialogButton.grid(row = 2, column = 1,ipadx = 20)
         self.RunDialogButton = Button(self,text=' Run ',state=DISABLED, command = self.runAggregator)
         self.RunDialogButton.grid(row = 2, column = 2, ipadx = 20)
-        self.LogBox = Text(self, height = 10, width = 60, state=DISABLED)
+        self.LogBox = Text(self, height = 10, width = 80, state=DISABLED)
         self.LogBox.grid(row = 3, column = 0, columnspan = 4, padx=10, pady=10)
     def chooseInputFileMethod(self):
         XLSXPath = filedialog.askopenfilename(filetypes= [('Excel worksheet','*.xlsx')])
