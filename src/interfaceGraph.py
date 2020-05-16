@@ -60,7 +60,7 @@ class MainDialog(Tk):
             logging.exception('Error: ' + str(e))
             self.LogBox.config(state=NORMAL)
             self.LogBox.delete("1.0", END)
-            self.LogBox.insert(END, str(e) + '\n')
+            self.LogBox.insert(END, 'Error: ' + str(e) + '\nTraceback (most recent call last):\n')
             self.LogBox.insert(END, ''.join(traceback.format_tb(e.__traceback__)))
             self.LogBox.config(state=DISABLED)
     def __init__(self):
