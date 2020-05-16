@@ -72,7 +72,9 @@ class MainDialog(Tk):
         self.logs_filename = logs_filename
         self.title('Aggregator Tool Dialog')
         self.resizable(width=False, height=False)
-        self.iconphoto(False, PhotoImage(file=os.path.join(get_data_dir(), '..', 'res', 'msf.png')))
+        image_path = os.path.join('res', 'msf.png')
+        if os.path.exists(image_path):
+            self.iconphoto(False, PhotoImage(file=image_path))
         self.createWidgets()
 
 

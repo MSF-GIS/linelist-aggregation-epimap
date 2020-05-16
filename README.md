@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 ## Development Usage
 
-Run the Python script aggregator.
+Run the Python script interfaceGraph.
 
 ```
 python src/interfaceGraph.py 
