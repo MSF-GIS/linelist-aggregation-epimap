@@ -23,7 +23,7 @@ activate epimap
 #### Option 2 : Installing package by package
 Create a conda environment
 ```
-conda create -n epimap python=3.6
+conda create -n epimap python=3.6.2
 ```
 
 Activate the conda environment
@@ -59,7 +59,7 @@ python src/interfaceGraph.py
 To release, install pyinstaller `pip install pyinstaller`, and use the following command
 
 ````
-pyinstaller src/interfaceGraph.py -F"
+pyinstaller src/interfaceGraph.py -F
 ````
 
 ## User usage

@@ -1,7 +1,6 @@
 import datetime
 import logging
 import os
-import traceback
 from tkinter import *
 from tkinter import filedialog
 
@@ -73,7 +72,7 @@ class MainDialog(Tk):
         self.logs_filename = logs_filename
         self.title('Aggregator Tool Dialog')
         self.resizable(width=False, height=False)
-        self.iconbitmap(os.path.join(get_data_dir(), '..', 'res', 'msf.ico'))
+        self.iconphoto(False, PhotoImage(file=os.path.join(get_data_dir(), '..', 'res', 'msf3.png')))
         self.createWidgets()
 
 
