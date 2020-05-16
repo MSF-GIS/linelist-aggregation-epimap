@@ -50,28 +50,46 @@ class MainDialog(Tk):
         self.destroy()
     def runAggregator(self):
         try:
+            start_datetime = datetime.datetime.now()
             df = aggregate(os.path.join(get_data_dir(), self.InputFilePathDisplayer.get()))
             export_data_frame_to_excel(df, self.OutputFilePathDisplayer.get())
             self.LogBox.config(state=NORMAL)
             self.LogBox.delete("1.0", END)
+            self.LogBox.insert(END, return_session_logs(self.logs_filename, start_datetime))
             self.LogBox.insert(END, f'SUCCESS : File {self.OutputFilePathDisplayer.get()} created')
             self.LogBox.config(state=DISABLED)
         except Exception as e:
             logging.exception('Error: ' + str(e))
             self.LogBox.config(state=NORMAL)
             self.LogBox.delete("1.0", END)
-            self.LogBox.insert(END, 'Error: ' + str(e) + '\nTraceback (most recent call last):\n')
-            self.LogBox.insert(END, ''.join(traceback.format_tb(e.__traceback__)))
+            self.LogBox.insert(END, return_session_logs(self.logs_filename, start_datetime))
             self.LogBox.config(state=DISABLED)
-    def __init__(self):
+    def __init__(self, logs_filename):
         Tk.__init__(self)
+        self.logs_filename = logs_filename
         self.title('Aggregator Tool Dialog')
         self.resizable(width=False, height=False)
         self.iconbitmap(os.path.join(get_data_dir(), '..', 'res', 'msf.ico'))
         self.createWidgets()
 
 
+def return_session_logs(logs_filename, start_datetime):
+    session_logs = ''
+    is_session_log = False
+    with open(logs_filename, 'r') as f:
+        for line in f.readlines():
+            if line.startswith('20'):
+                log_datetime = datetime.datetime.strptime(line[:23], '%Y-%m-%d %H:%M:%S,%f')
+                is_session_log = (log_datetime >= start_datetime)
+                if is_session_log:
+                    session_logs += line[34:]
+            elif is_session_log:
+                session_logs += line
+    return session_logs
+
+
 if __name__ == '__main__':
-    logging.basicConfig(filename='logs.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    DialogObj = MainDialog()
+    logs_filename = 'logs.log'
+    logging.basicConfig(filename=logs_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    DialogObj = MainDialog(logs_filename)
     DialogObj.mainloop()
