@@ -23,7 +23,7 @@ activate epimap
 #### Option 2 : Installing package by package
 Create a conda environment
 ```
-conda create -n epimap python=3.8
+conda create -n epimap python=3.6
 ```
 
 Activate the conda environment
@@ -33,7 +33,7 @@ activate epimap
 
 Install dependencies
 ```
-conda install pandas==1.0.3
+conda install pandas==0.20.3
 conda install xlrd==1.2.0
 conda install openpyxl==3.0.3
 conda install python-levenshtein==0.12.0
@@ -48,13 +48,24 @@ Install dependencies
 pip install -r requirements.txt
 ````
 
-## Usage
+## Development Usage
 
 Run the Python script aggregator.
 
 ```
-python src/aggregator.py 
+python src/interfaceGraph.py 
 ```
+
+To release, install pyinstaller `pip install pyinstaller`, and use the following command
+
+````
+pyinstaller src/interfaceGraph.py -F"
+````
+
+## User usage
+
+- Run `aggregation_epimap.exe` by double-clicking.
+- You can find logs about all the executions in `logs.log` file.
 
 ## Tests
 

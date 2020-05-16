@@ -60,10 +60,10 @@ def aggregate(input_file):
     :return: Dataframe whit aggregation. Columns : 'CODE_LOCATION', 'Year', 'Month', 'Week', 'Num of cases'
     """
     # Get data
-    linelist = pd.read_excel(input_file, sheet_name='Linelist')[['Date of Assessment', 'Village', 'Malaria RDT result']]
+    linelist = pd.read_excel(input_file, sheetname='Linelist')[['Date of Assessment', 'Village', 'Malaria RDT result']]
     linelist = linelist[~pd.isnull(linelist).transpose().any()]
-    epiweek = pd.read_excel(input_file, sheet_name='Epiweeks', header=2)[['Epi week', 'Month', 'First day in week']]
-    geo = pd.read_excel(input_file, sheet_name='GEO')[['Camp/village', 'GEOID (pcode)?']]
+    epiweek = pd.read_excel(input_file, sheetname='Epiweeks', header=2)[['Epi week', 'Month', 'First day in week']]
+    geo = pd.read_excel(input_file, sheetname='GEO')[['Camp/village', 'GEOID (pcode)?']]
     geo.columns = ['Village', 'CODE_LOCATION']
 
     # Transform data
