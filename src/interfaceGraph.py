@@ -58,6 +58,10 @@ class MainDialog(Tk):
             self.LogBox.insert(END, return_session_logs(self.logs_filename, start_datetime))
             self.LogBox.insert(END, f'SUCCESS : File {self.OutputFilePathDisplayer.get()} created')
             self.LogBox.config(state=DISABLED)
+            if 'cartong_epimap_' in self.oFPSv.get():
+                default_output_filename = 'cartong_epimap_' + datetime.datetime.now().strftime(
+                    '%Y_%m_%d_%H_%M_%S') + '.xlsx'
+                self.oFPSv.set(os.path.join(os.getcwd(), default_output_filename))
         except Exception as e:
             logging.exception('Error: ' + str(e))
             self.LogBox.config(state=NORMAL)
